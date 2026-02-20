@@ -74,7 +74,7 @@ function App() {
       <h2>投稿一覧</h2>
       {posts.map((post) => (
         <div key={post.id}>
-          <h3>{post.title}</h3>
+          <h3>id:{post.id} title:{post.title}</h3>
           <p>{post.content}</p>
           <button onClick={() => deletePost(post.id)}>削除</button>
         </div>

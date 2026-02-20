@@ -8,7 +8,7 @@ router.get("/", async (req, res) => {
   res.json(posts);
 });
 
-// 投稿作成
+// 投稿作成機能
 router.post("/", async (req, res) => {
   const { title, content, user_id } = req.body;
 
@@ -18,6 +18,18 @@ router.post("/", async (req, res) => {
 
   //投稿内容を返す
   res.json(post);
+});
+
+// 投稿削除機能
+router.delete("/:id", async (req, res) => {
+  //           ↑server.jsで"/posts"と書いているのでそのあとのパスだけ書けばいい。
+  console.log("DELETE来ました:", req.params.id);
+
+  const { id } = req.params;
+
+  await knex("posts").where({ id }).del();
+
+  res.json({ message: "Deleted" });
 });
 
 module.exports = router;
