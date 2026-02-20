@@ -1,0 +1,23 @@
+const express = require("express");
+const router = express.Router();
+const knex = require("../db/knex");
+
+// 投稿一覧取得
+router.get("/", async (req, res) => {
+  const posts = await knex("posts").select("*");
+  res.json(posts);
+});
+
+// 投稿作成
+router.post("/", async (req, res) => {
+  const { title, content, user_id } = req.body;
+
+  const [post] = await knex("posts")
+    .insert({ title, content, user_id })
+    .returning("*");
+
+  //投稿内容を返す
+  res.json(post);
+});
+
+module.exports = router;

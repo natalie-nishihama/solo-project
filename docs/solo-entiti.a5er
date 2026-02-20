@@ -1,0 +1,217 @@
+﻿# A5:ER FORMAT:21
+# A5:ER ENCODING:UTF8
+# A5:ER Mk-1 Copyright © 2007 m.matsubara
+# A5:SQL Mk-2 Version 2.21.0 Copyright © 1997 - 2026 m.matsubara
+#  https://a5m2.mmatsubara.com
+
+[Manager]
+ProjectName=Solo Project
+Author=
+MaxEntityRowShow=1000
+ReadOnlyRecommend=0
+PageInfo="Main",2,"A3Landscape",$FFFFFF
+LogicalView=1
+DecodeDomain=0
+ViewFormat=0
+UseNondependenceDashLine=0
+FontName=Tahoma
+FontSize=6
+PaperSize=A4Landscape
+HeaderLeft=
+HeaderCenter=
+HeaderRight=
+FooterLeft=
+FooterCenter=
+FooterRight=
+ShowPageoutRelation=1
+RDBMSTypeName=Oracle Database
+DefaultPkName=%0:s_PKC
+DefaultPkIndexName=%0:s_PKI
+DefaultIndexName=%0:s_IX%1:d
+DefaultFkName=%0:s_FK%1:d
+SqlSeparator=0
+UpperCaseKeyword=0
+ShowTag=1
+ShowCommonAttributes=0
+ShowDisableAttributes=0
+BugFixEntityWidth=1
+
+[Entity]
+PName=users
+LName=ユーザー
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=600
+Top=300
+Field="ID","id","@INT","NOT NULL",0,"","",$FFFFFFFF,""
+Field="名前","name","@CHAR",,,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20260217173605
+Position="Main",600,300,198,107
+ZOrder=1
+
+[Entity]
+PName=posts
+LName=投稿
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=850
+Top=250
+Field="ID","id","@INT","NOT NULL",0,"","",$FFFFFFFF,""
+Field="タイトル","title","@CHAR(100)","NOT NULL",,"","",$FFFFFFFF,""
+Field="本文","content","@VARCHAR","NOT NULL",,"","",$FFFFFFFF,""
+Field="投稿ユーザー","user_id","@INT","NOT NULL",,"","",$FFFFFFFF,""
+Field="投稿日時","created_at","@INT","NOT NULL",,"","",$FFFFFFFF,""
+Field="いいね","like_count","@INT",,,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20260220094405
+Position="Main",850,250,285,154
+ZOrder=2
+
+[Relation]
+Entity1=users
+Entity2=posts
+RelationType1=2
+RelationType2=3
+Fields1=id
+Fields2=id
+Cardinarity1=
+Cardinarity2=
+Position="MAIN",0,1521,8479,2286,R,R,""
+Dependence=1
+Caption=
+PName=
+LineMode=0
+Bar1=152
+Bar2=848
+Bar3=229
+TermPos1=R
+TermPos2=R
+ZOrder=4
+
+[Entity]
+PName=tags
+LName=タグ
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=1551
+Top=398
+Field="ID","id","@INT","NOT NULL",0,"","",$FFFFFFFF,""
+Field="名前","name","@CHAR(30)","NOT NULL",,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20260217155411
+Position="Main",1551,398,173,58
+ZOrder=5
+
+[Entity]
+PName=post_tags
+LName=投稿タグ
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=1200
+Top=300
+Field="投稿ID","post_id","@INT","NOT NULL",0,"","",$FFFFFFFF,""
+Field="タグID","tag_id","@INT","NOT NULL",1,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20260220101100
+Position="Main",1200,300,273,71
+ZOrder=7
+
+[Entity]
+PName=links
+LName=リンク
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=950
+Top=500
+Field="ID","id","@INT","NOT NULL",0,"","",$FFFFFFFF,""
+Field="投稿ID","post_id","@INT","NOT NULL",,"","",$FFFFFFFF,""
+Field="URL","url","@VARCHAR(200)","NOT NULL",,"","",$FFFFFFFF,""
+Field="説明","description","@VARCHAR(100)",,,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20260220101946
+Position="Main",950,500,195,103
+ZOrder=8
+
+[Relation]
+Entity1=posts
+Entity2=post_tags
+RelationType1=2
+RelationType2=3
+Fields1=id
+Fields2=post_id
+Cardinarity1=
+Cardinarity2=
+Position="MAIN",0,1786,8214,1521,R,R,""
+Dependence=1
+Caption=
+PName=
+LineMode=0
+Bar1=179
+Bar2=821
+Bar3=152
+TermPos1=R
+TermPos2=R
+ZOrder=11
+
+[Relation]
+Entity1=tags
+Entity2=post_tags
+RelationType1=2
+RelationType2=3
+Fields1=id
+Fields2=tag_id
+Cardinarity1=
+Cardinarity2=
+Position="MAIN",0,1786,8214,2070,R,R,""
+Dependence=1
+Caption=
+PName=
+LineMode=0
+Bar1=179
+Bar2=821
+Bar3=207
+TermPos1=R
+TermPos2=R
+ZOrder=12
+
+[Relation]
+Entity1=posts
+Entity2=links
+RelationType1=2
+RelationType2=3
+Fields1=id
+Fields2=id
+Cardinarity1=
+Cardinarity2=
+Position="MAIN",0,3350,6650,3174,R,R,""
+Dependence=1
+Caption=
+PName=
+LineMode=0
+Bar1=335
+Bar2=665
+Bar3=317
+TermPos1=R
+TermPos2=R
+ZOrder=13

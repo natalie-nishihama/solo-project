@@ -1,0 +1,10 @@
+const express = require("express");
+const router = express.Router();
+const knex = require("../db/knex");
+
+/*
+リンクinsertする
+リンクうけとるときに投稿IDも受け取ること。
+
+
+*/
