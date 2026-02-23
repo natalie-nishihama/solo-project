@@ -5,9 +5,9 @@
 
 ## 目次
 1. 環境変数
-2. 依存関係インストールコマンド
+2. コマンド
 3. ディレクトリ構成
-4. 
+
 
 ## 1.環境変数 
 | 変数名   |     値      |
@@ -17,8 +17,24 @@
 | DB_NAME    | knowledge |
 | DB_PORT    | 5432 | 
 
-## 2.依存関係インストールコマンド
+## 2.コマンド
 
-## ディレクトリ構成
+## 3.ディレクトリ構成
 
-##
+solo-project/  
+├─ client\react_front            # React フロントエンド  
+│  ├─ src/  
+│  │  ├─ components/  
+│  │  └─ styles/  
+│  ├─ public/  
+│  ├─ package.json  
+│  └─ vite.config.js  
+├─ db/           # Node.js / Express バックエンド  
+├─ docs/  
+├─ migrations/  
+├─ routes/  
+├─ package.json  
+├─ README.md  
+└─ .gitignore  
+
+
