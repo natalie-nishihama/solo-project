@@ -23,6 +23,8 @@ function App() {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   //タグ検索用
   const [searchTagIds, setSearchTagIds] = useState([]);
+  //キーワード検索用
+  const [keyword, setKeyword] = useState("");
 
   // 投稿一覧取得
   const ReadPosts = async () => {
@@ -226,6 +228,16 @@ const handleCancel = () => {
 
       <h2>投稿一覧</h2>
 
+      <h3>キーワードで絞り込み</h3>
+      
+        {/* キーワード検索入力欄 */}
+        <input
+          type="text"
+          placeholder="キーワード検索"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
+
       <h3>タグで絞り込み</h3>
       <div>
         <button onClick={() => setSearchTagIds([])}>
@@ -239,7 +251,7 @@ const handleCancel = () => {
               margin: "5px",
               backgroundColor:
                 searchTagIds.includes(tag.id)
-                  ? "orange"
+                  ? "pink"
                   : "white"
             }}
             onClick={() => toggleFilterTag(tag.id)}
@@ -251,22 +263,32 @@ const handleCancel = () => {
       {/* 投稿一覧 */}
       {posts
         .filter(post => {
-          // タグ検索で１つも選択されていなければ全件表示
-          if (searchTagIds.length === 0) return true;
 
-          //idでなくタグ名で取得してるから名前で比較
-      
-          // return (post.tags ?? []).some(tagName => {
-          //   return searchTagIds.some(filterId => {
-          //     const found = tags.find(t => t.id === filterId);
-          //     return found && found.name === tagName;
-          //   });
-          // });
+            // タグ検索
+          const tagMatch =
+            searchTagIds.length === 0 ||
+            (post.tags ?? []).some(tag =>
+              searchTagIds.includes(tag.id)
+            );
 
-          // .some ➡ 条件を満たすものが１つでもあればtrue
-          return (post.tags ?? []).some(tag =>
-            searchTagIds.includes(tag.id)
-          );
+          // キーワード検索（タイトルか本文に含まれているか）
+          const keywordMatch =
+            keyword === "" ||
+            post.title.toLowerCase().includes(keyword.toLowerCase()) ||
+            post.content.toLowerCase().includes(keyword.toLowerCase());
+          
+          // toLowerCase() ➡ 大文字小文字区別を無視する
+
+          //タグに引っかかる&キーワード一致したらtrueで返す
+          return tagMatch && keywordMatch;
+
+          // // タグ検索で１つも選択されていなければ全件表示
+          // if (searchTagIds.length === 0) return true;
+
+          // // .some ➡ 条件を満たすものが１つでもあればtrue
+          // return (post.tags ?? []).some(tag =>
+          //   searchTagIds.includes(tag.id)
+          // );
         })
         .map(post => (
         <div key={post.id}>
