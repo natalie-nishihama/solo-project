@@ -11,6 +11,9 @@ function App() {
   const [content, setContent] = useState("");
   const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState("");
+  //タグ選択用
+  const [tags, setTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
   //投稿編集用
   const [editingId, setEditingId] = useState(null);
   //モーダル用
@@ -30,6 +33,7 @@ function App() {
   // 初回読み込み
   useEffect(() => {
    ReadPosts();
+   readTags();
    readUsers();
   }, []);
 
@@ -43,16 +47,36 @@ const handleCreate = async (e) => {
     await fetch("/posts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, content, user_id: Number(selectedUserId) }),
+      body: JSON.stringify({ title, content, user_id: Number(selectedUserId), tag_id: selectedTags }),
     });
 
   setTitle("");
   setContent("");
   setEditingId(null);
   ReadPosts();
+  setSelectedTags([]);
 };
 
-//ユーザ選択用
+// タグ読み込み
+const readTags = async () => {
+  const res = await fetch("/tags");
+  const data = await res.json();
+  console.log("tagdataaaaaaaaaaaa:",data)
+  setTags(data);
+};
+
+const selectTag = (id) => {
+  //選択済みタグ配列に押下したタグが存在するか
+  if (selectedTags.includes(id)) {
+    // 存在する場合➡フィルターで削除する
+    setSelectedTags(selectedTags.filter((tagId) => tagId !== id));
+  } else {
+    // 選択しない場合➡追加する
+    setSelectedTags([...selectedTags, id]);
+  }
+};
+
+//ユーザ読み込み
 const readUsers = async () => {
   const res = await fetch("/users");
   const data = await res.json();
@@ -149,6 +173,27 @@ const handleCancel = () => {
           onChange={(e) => setContent(e.target.value)}
         />
         <br />
+
+        {/* タグ選択ボタン */}
+        <div>
+          {tags.map((tag) => (
+            <button
+              key={tag.id}
+              type="button"
+              style={{
+                margin: "5px",
+                backgroundColor: selectedTags.includes(tag.id)
+                  ? "lightblue"
+                  : "white",
+              }}
+              onClick={() => selectTag(tag.id)}
+            >
+              {tag.name}
+            </button>
+          ))}
+        </div>
+
+        <br />
         {/* ユーザ選択のセレクトボックス */}
         <select
           value={selectedUserId}//選択したユーザ
@@ -163,8 +208,6 @@ const handleCancel = () => {
         </select>
 
         <button type="submit">投稿</button>
-
-        <button type="button" onClick={handleCancel}>キャンセル</button>
       </form>
       
 
@@ -173,8 +216,15 @@ const handleCancel = () => {
       <h2>投稿一覧</h2>
       {posts.map((post) => (
         <div key={post.id}>
-          <h3>id:{post.id} title:{post.title}</h3>
-          <p>{post.content}</p>
+              <h3>id:{post.id} title:{post.title}</h3>
+              <p>{post.content}</p>
+              <div>
+                {(post.tags ?? []).map((tag, index) => (
+                  <span key={index} style={{ marginRight: "5px", color: "blue" }}>
+                    #{tag}
+                  </span>
+                ))}
+              </div>
           <button onClick={() => startEdit(post)}>編集</button>
           <button onClick={() => deletePost(post.id)}>削除</button>
         </div>

@@ -3,18 +3,74 @@ const router = express.Router();
 const knex = require("../db/knex");
 
 // 投稿一覧取得
+
+// router.get("/", async (req, res) => {
+//   try {
+//     const posts = await knex("posts")
+//       .leftJoin("post_tags", "posts.id", "post_tags.post_id")
+//       .leftJoin("tags", "post_tags.tag_id", "tags.id")
+//       .select(
+//         "posts.*",
+//         knex.raw(`
+//           COALESCE(
+//             array_agg(tags.name) FILTER (WHERE tags.name IS NOT NULL),
+//             ARRAY[]::text[]
+//           ) as tags
+//         `),
+//       )
+//       .groupBy("posts.id")
+//       .orderBy("posts.created_at", "desc");
+
+//     res.json(posts);
+//   } catch (err) {
+//     console.error("GET ERROR:", err);
+//     res.status(500).json({ error: "取得失敗" });
+//   }
+// });
+
 router.get("/", async (req, res) => {
-  const posts = await knex("posts").select("*").orderBy("created_at", "desc");
-  res.json(posts);
+  try {
+    const posts = await knex("posts")
+      .leftJoin("post_tags", "posts.id", "post_tags.post_id")
+      .leftJoin("tags", "post_tags.tag_id", "tags.id")
+      .select(
+        "posts.*",
+        knex.raw(
+          `COALESCE(array_agg(tags.name) FILTER (WHERE tags.name IS NOT NULL),'{}') as tags`,
+        ),
+      )
+      .groupBy("posts.id")
+      .orderBy("posts.created_at", "desc");
+    // knex.raw➡生SQLを書いている
+    // array_agg➡同じグループの値を配列にまとめる集約関数
+    // 投稿ごとにタグをまとめている
+
+    // console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
+    // console.log(posts);
+    res.json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "取得失敗" });
+  }
 });
 
-// 投稿作成機能
+// 新規投稿機能
 router.post("/", async (req, res) => {
-  const { title, content, user_id } = req.body;
+  const { title, content, user_id, tag_id } = req.body;
 
   const [post] = await knex("posts")
     .insert({ title, content, user_id })
     .returning("*");
+
+  //選択されたタグを中間テーブルにインサート
+  if (Array.isArray(tag_id) && tag_id.length > 0) {
+    const insertData = tag_id.map((tagId) => ({
+      post_id: post.id,
+      tag_id: tagId,
+    }));
+
+    await knex("post_tags").insert(insertData);
+  }
 
   //投稿内容を返す
   res.json(post);
