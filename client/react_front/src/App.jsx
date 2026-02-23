@@ -13,6 +13,7 @@ function App() {
   const ReadPosts = async () => {
     const res = await fetch("/posts");
     const data = await res.json();
+    console.log(data);
     setPosts(data);
   };
 
