@@ -95,4 +95,19 @@ router.delete("/:id", async (req, res) => {
   res.json({ message: "Deleted" });
 });
 
+// いいね数増加
+router.post("/:id/like", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [updatedPost] = await knex("posts")
+      .where({ id })
+      .increment("like_count", 1)
+      .returning("*");
+    res.json(updatedPost);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "いいね失敗" });
+  }
+});
+
 module.exports = router;

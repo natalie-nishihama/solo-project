@@ -166,6 +166,14 @@ const handleCancel = () => {
     }
   };
 
+  //いいね機能
+  const handleLike = async (id) => {
+    await fetch(`/posts/${id}/like`, {
+      method: "POST",
+    });
+    ReadPosts(); 
+  };
+
 
   return (
     <div style={{ padding: "20px" }}>
@@ -265,6 +273,7 @@ const handleCancel = () => {
         .filter(post => {
 
             // タグ検索
+            // .some ➡ 条件を満たすものが１つでもあればtrue
           const tagMatch =
             searchTagIds.length === 0 ||
             (post.tags ?? []).some(tag =>
@@ -281,14 +290,6 @@ const handleCancel = () => {
 
           //タグに引っかかる&キーワード一致したらtrueで返す
           return tagMatch && keywordMatch;
-
-          // // タグ検索で１つも選択されていなければ全件表示
-          // if (searchTagIds.length === 0) return true;
-
-          // // .some ➡ 条件を満たすものが１つでもあればtrue
-          // return (post.tags ?? []).some(tag =>
-          //   searchTagIds.includes(tag.id)
-          // );
         })
         .map(post => (
         <div key={post.id}>
@@ -302,6 +303,9 @@ const handleCancel = () => {
                   </span>
                 ))}
               </div>
+          <p>❤ : {post.like_count}</p>
+          <button onClick={() => handleLike(post.id)}>❤</button>
+
           <button onClick={() => startEdit(post)}>編集</button>
           <button onClick={() => deletePost(post.id)}>削除</button>
         </div>
