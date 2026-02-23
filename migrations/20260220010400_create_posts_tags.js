@@ -14,8 +14,8 @@ exports.up = (knex) => {
 
     t.primary(["post_id", "tag_id"]);
 
-    t.foreign("post_id").references("posts.id");
-    t.foreign("tag_id").references("tags.id");
+    t.foreign("post_id").references("posts.id").onDelete("CASCADE");
+    t.foreign("tag_id").references("tags.id").onDelete("CASCADE");
 
     //.onDelete("CASCADE")をつけるといい。投稿削除された際に連動して消える
   });
