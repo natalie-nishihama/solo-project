@@ -292,6 +292,7 @@ const handleCancel = () => {
         })
         .map(post => (
         <div key={post.id}>
+              <p>投稿者: {post.user_name}</p>
               <h3>id:{post.id} title:{post.title}</h3>
               <p>{post.content}</p>
               <div>

@@ -4,30 +4,6 @@ const knex = require("../db/knex");
 
 // 投稿一覧取得
 
-// router.get("/", async (req, res) => {
-//   try {
-//     const posts = await knex("posts")
-//       .leftJoin("post_tags", "posts.id", "post_tags.post_id")
-//       .leftJoin("tags", "post_tags.tag_id", "tags.id")
-//       .select(
-//         "posts.*",
-//         knex.raw(`
-//           COALESCE(
-//             array_agg(tags.name) FILTER (WHERE tags.name IS NOT NULL),
-//             ARRAY[]::text[]
-//           ) as tags
-//         `),
-//       )
-//       .groupBy("posts.id")
-//       .orderBy("posts.created_at", "desc");
-
-//     res.json(posts);
-//   } catch (err) {
-//     console.error("GET ERROR:", err);
-//     res.status(500).json({ error: "取得失敗" });
-//   }
-// });
-
 router.get("/", async (req, res) => {
   try {
     const posts = await knex("posts")
