@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+//モーダル用
+import EditModal from "./components/EditModal";
 
 function App() {
   //投稿一覧取得用
@@ -6,8 +8,12 @@ function App() {
   //新規投稿用
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [users, setUsers] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState("");
   //投稿編集用
   const [editingId, setEditingId] = useState(null);
+  //モーダル用
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 投稿一覧取得
   const ReadPosts = async () => {
@@ -20,29 +26,21 @@ function App() {
   // 初回読み込み
   useEffect(() => {
    ReadPosts();
+   readUsers();
   }, []);
 
 
-// 投稿送信
-const handleSubmit = async (e) => {
+// 新規投稿送信
+const handleCreate = async (e) => {
   //そのイベントがもともと行われるべきデフォルトの挙動を防止する
   e.preventDefault();
 
-  if (editingId) {
-    // 投稿更新
-    await fetch(`/posts/${editingId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, content }),
-    });
-  } else {
     // 投稿新規作成
     await fetch("/posts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, content, user_id: 1 }),
     });
-  }
 
   setTitle("");
   setContent("");
@@ -50,36 +48,50 @@ const handleSubmit = async (e) => {
   ReadPosts();
 };
 
-
-
-
-  // const handleSubmit = async (e) => {
-    
-  //   e.preventDefault();
-
-  //   await fetch("/posts", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       title,
-  //       content,
-  //       user_id: 1, // 仮で1
-  //     }),
-  //   });
-
-  //   setTitle("");
-  //   setContent("");
-  //  ReadPosts();
-  // };
+//ユーザ選択用
+const readUsers = async () => {
+  const res = await fetch("/users");
+  const data = await res.json();
+  setUsers(data);
+};
 
   //投稿編集
-  const startEdit = (post) => {
+const startEdit = (post) => {
   setTitle(post.title);
   setContent(post.content);
   setEditingId(post.id);
+  //編集モーダル開く
+  setIsModalOpen(true);
 };
+
+//投稿更新（更新ボタン押下）
+const handleUpdate = async (e) => {
+  //そのイベントがもともと行われるべきデフォルトの挙動を防止する
+  e.preventDefault();
+  await fetch(`/posts/${editingId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, content }),
+  });
+
+  setEditingId(null);
+  setTitle("");
+  setContent("");
+  //編集モーダル閉じる
+  setIsModalOpen(false);
+  ReadPosts();
+};
+
+//更新キャンセル機能（キャンセルボタン押下）
+const handleCancel = () => {
+  setEditingId(null);
+  setTitle("");
+  setContent("");
+  //編集モーダル閉じる
+  setIsModalOpen(false);
+};
+
+
 
   //投稿削除
   const deletePost = async (id) => {
@@ -96,20 +108,25 @@ const handleSubmit = async (e) => {
     <div style={{ padding: "20px" }}>
       <h1>ナレッジぽーたる</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleCreate}>
         <input
           placeholder="タイトル"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <br />
+        <br/>
         <textarea
           placeholder="内容"
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
         <br />
-        <button type="submit">投稿</button>
+
+          <button type="submit">投稿</button>
+
+        <button type="button" onClick={handleCancel}>
+          キャンセル
+        </button>
       </form>
       
 
@@ -124,7 +141,20 @@ const handleSubmit = async (e) => {
           <button onClick={() => deletePost(post.id)}>削除</button>
         </div>
       ))}
+
+      <EditModal
+        open={isModalOpen}
+        handleClose={handleCancel}
+        handleUpdate={handleUpdate}
+        title={title}
+        content={content}
+        setTitle={setTitle}
+        setContent={setContent}
+      />
+
     </div>
+
+    
   );
 }
 
