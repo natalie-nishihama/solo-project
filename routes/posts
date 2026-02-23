@@ -4,6 +4,7 @@ const knex = require("../db/knex");
 
 // 投稿一覧取得
 router.get("/", async (req, res) => {
+  // 新しい投稿を上に
   const posts = await knex("posts").select("*");
   res.json(posts);
 });
@@ -18,6 +19,26 @@ router.post("/", async (req, res) => {
 
   //投稿内容を返す
   res.json(post);
+});
+
+// 投稿更新
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { title, content } = req.body;
+
+  try {
+    //DBの投稿内容を更新する
+    const updatedPost = await knex("posts")
+      .where({ id })
+      .update({ title, content })
+      .returning("*");
+
+    res.json(updatedPost[0]);
+  } catch (err) {
+    //DB更新失敗し場合
+    console.error(err);
+    res.status(500).json({ error: "更新失敗" });
+  }
 });
 
 // 投稿削除機能
