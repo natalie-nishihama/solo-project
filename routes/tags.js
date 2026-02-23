@@ -1,12 +1,11 @@
-// routes/tags.js
 const express = require("express");
 const router = express.Router();
 const knex = require("../db/knex");
 
+// タグ一覧取得機能
 router.get("/", async (req, res) => {
   try {
     const tags = await knex("tags").select("*");
-    console.log("tagsssssssssss:", tags);
     res.json(tags);
   } catch (err) {
     console.error(err);
