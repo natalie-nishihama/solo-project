@@ -46,7 +46,7 @@ router.post("/", async (req, res) => {
   const { title, content, user_id, tag_id } = req.body;
 
   const [post] = await knex("posts")
-    .insert({ title, content, user_id })
+    .insert({ title, content, user_id, like_count: 0 })
     .returning("*");
 
   //選択されたタグを中間テーブルにインサート
