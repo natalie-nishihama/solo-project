@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import PostForm from "./components/PostForm";
+import SearchFilters from "./components/SearchFilters";
+import PostList from "./components/PostList";
 //モーダル用
 import EditModal from "./components/EditModal";
 import UserAddModal from "./components/UserAddModal";
@@ -175,141 +178,45 @@ const handleCancel = () => {
   };
 
 
-  return (
+
+ return (
     <div style={{ padding: "20px" }}>
       <h1>ナレッジぽーたる</h1>
 
-      <button type="button" onClick={() => setIsUserModalOpen(true)}>ユーザー追加</button>
+      <button type="button" onClick={() => setIsUserModalOpen(true)}>
+        ユーザー追加
+      </button>
 
-      <form onSubmit={handleCreate}>
-        <input
-          placeholder="タイトル"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <br/>
-        <textarea
-          placeholder="内容"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-        <br />
+      <PostForm
+        title={title}
+        setTitle={setTitle}
+        content={content}
+        setContent={setContent}
+        users={users}
+        selectedUserId={selectedUserId}
+        setSelectedUserId={setSelectedUserId}
+        tags={tags}
+        selectedTags={selectedTags}
+        selectTag={selectTag}
+        handleCreate={handleCreate}
+      />
 
-        {/* タグ選択ボタン */}
-        <div>
-          {tags.map((tag) => (
-            <button
-              key={tag.id}
-              type="button"
-              style={{
-                margin: "5px",
-                backgroundColor: selectedTags.includes(tag.id)
-                  ? "lightblue"
-                  : "white",
-              }}
-              onClick={() => selectTag(tag.id)}
-            >
-              {tag.name}
-            </button>
-          ))}
-        </div>
+      <SearchFilters
+        tags={tags}
+        searchTagIds={searchTagIds}
+        toggleFilterTag={toggleFilterTag}
+        keyword={keyword}
+        setKeyword={setKeyword}
+      />
 
-        <br />
-        {/* ユーザ選択のセレクトボックス */}
-        <select
-          value={selectedUserId}//選択したユーザ
-          onChange={(e) => setSelectedUserId(e.target.value)}
-        >
-          <option value="">ユーザー選択</option>
-          {users.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.name}
-            </option>
-          ))}
-        </select>
-
-        <button type="submit">投稿</button>
-      </form>
-      
-
-      <hr />
-
-      <h2>投稿一覧</h2>
-
-      <h3>キーワードで絞り込み</h3>
-      
-        {/* キーワード検索入力欄 */}
-        <input
-          type="text"
-          placeholder="キーワード検索"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-        />
-
-      <h3>タグで絞り込み</h3>
-      <div>
-        <button onClick={() => setSearchTagIds([])}>
-          すべて表示
-        </button>
-
-        {tags.map(tag => (
-          <button
-            key={tag.id}
-            style={{
-              margin: "5px",
-              backgroundColor:
-                searchTagIds.includes(tag.id)
-                  ? "pink"
-                  : "white"
-            }}
-            onClick={() => toggleFilterTag(tag.id)}
-          >
-            {tag.name}
-          </button>
-        ))}
-      </div>
-      {/* 投稿一覧 */}
-      {posts
-        .filter(post => {
-
-            // タグ検索
-            // .some ➡ 条件を満たすものが１つでもあればtrue
-          const tagMatch =
-            searchTagIds.length === 0 ||
-            (post.tags ?? []).some(tag =>
-              searchTagIds.includes(tag.id)
-            );
-
-          // キーワード検索（タイトルか本文に含まれているか）
-          const keywordMatch =
-            keyword === "" ||
-            post.title.toLowerCase().includes(keyword.toLowerCase()) ||
-            post.content.toLowerCase().includes(keyword.toLowerCase());
-          
-          // toLowerCase() ➡ 大文字小文字区別を無視する
-
-          //タグに引っかかる&キーワード一致したらtrueで返す
-          return tagMatch && keywordMatch;
-        })
-        .map(post => (
-        <div key={post.id}>
-              <p>投稿者: {post.user_name}</p>
-              <h3>id:{post.id} title:{post.title}</h3>
-              <p>{post.content}</p>
-              <div>
-                {(post.tags ?? []).map((tag, index) => (
-                  <span key={index} style={{ marginRight: "5px", color: "blue" }}>
-                    #{tag.name}
-                  </span>
-                ))}
-              </div>
-          <p>❤ : {post.like_count}</p>
-          <button onClick={() => handleLike(post.id)}>❤</button>
-
-          <button onClick={() => startEdit(post)}>編集</button>
-          <button onClick={() => deletePost(post.id)}>削除</button>
-        </div>
-      ))}
+      <PostList
+        posts={posts}
+        searchTagIds={searchTagIds}
+        keyword={keyword}
+        handleLike={handleLike}
+        startEdit={startEdit}
+        deletePost={deletePost}
+      />
 
       <UserAddModal
         open={isUserModalOpen}
@@ -328,10 +235,7 @@ const handleCancel = () => {
         setTitle={setTitle}
         setContent={setContent}
       />
-
     </div>
-
-    
   );
 }
 
