@@ -3,21 +3,84 @@ const router = express.Router();
 const knex = require("../db/knex");
 
 // 投稿一覧取得
+
 router.get("/", async (req, res) => {
-  const posts = await knex("posts").select("*");
-  res.json(posts);
+  try {
+    const posts = await knex("posts")
+      .leftJoin("users", "posts.user_id", "users.id")
+      .leftJoin("post_tags", "posts.id", "post_tags.post_id")
+      .leftJoin("tags", "post_tags.tag_id", "tags.id")
+      .select(
+        "posts.*",
+        "users.name as user_name",
+        knex.raw(
+          `COALESCE(
+              json_agg(
+                json_build_object(
+                  'id', tags.id,
+                  'name', tags.name
+                )
+              ) FILTER (WHERE tags.id IS NOT NULL),
+              '[]'
+            ) as tags
+          `,
+        ),
+      )
+      .groupBy("posts.id", "users.name")
+      .orderBy("posts.created_at", "desc");
+    // knex.raw➡生SQLを書いている
+    // array_agg➡同じグループの値を配列にまとめる集約関数
+    // 投稿ごとにタグをまとめている
+
+    // console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
+    // console.log(posts);
+    res.json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "取得失敗" });
+  }
 });
 
-// 投稿作成機能
+// 新規投稿機能
 router.post("/", async (req, res) => {
-  const { title, content, user_id } = req.body;
+  const { title, content, user_id, tag_id } = req.body;
 
   const [post] = await knex("posts")
-    .insert({ title, content, user_id })
+    .insert({ title, content, user_id, like_count: 0 })
     .returning("*");
+
+  //選択されたタグを中間テーブルにインサート
+  if (Array.isArray(tag_id) && tag_id.length > 0) {
+    const insertData = tag_id.map((tagId) => ({
+      post_id: post.id,
+      tag_id: tagId,
+    }));
+
+    await knex("post_tags").insert(insertData);
+  }
 
   //投稿内容を返す
   res.json(post);
+});
+
+// 投稿更新
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { title, content } = req.body;
+
+  try {
+    //DBの投稿内容を更新する
+    const updatedPost = await knex("posts")
+      .where({ id })
+      .update({ title, content })
+      .returning("*");
+
+    res.json(updatedPost[0]);
+  } catch (err) {
+    //DB更新失敗し場合
+    console.error(err);
+    res.status(500).json({ error: "更新失敗" });
+  }
 });
 
 // 投稿削除機能
@@ -30,6 +93,21 @@ router.delete("/:id", async (req, res) => {
   await knex("posts").where({ id }).del();
 
   res.json({ message: "Deleted" });
+});
+
+// いいね数増加
+router.post("/:id/like", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [updatedPost] = await knex("posts")
+      .where({ id })
+      .increment("like_count", 1)
+      .returning("*");
+    res.json(updatedPost);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "いいね失敗" });
+  }
 });
 
 module.exports = router;
