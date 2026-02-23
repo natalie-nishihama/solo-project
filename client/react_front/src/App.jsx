@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 //モーダル用
 import EditModal from "./components/EditModal";
+import UserAddModal from "./components/UserAddModal";
 
 function App() {
   //投稿一覧取得用
@@ -14,6 +15,9 @@ function App() {
   const [editingId, setEditingId] = useState(null);
   //モーダル用
   const [isModalOpen, setIsModalOpen] = useState(false);
+  //ユーザ追加用
+  const [newUserName, setNewUserName] = useState("");
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
   // 投稿一覧取得
   const ReadPosts = async () => {
@@ -39,7 +43,7 @@ const handleCreate = async (e) => {
     await fetch("/posts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, content, user_id: 1 }),
+      body: JSON.stringify({ title, content, user_id: Number(selectedUserId) }),
     });
 
   setTitle("");
@@ -53,6 +57,28 @@ const readUsers = async () => {
   const res = await fetch("/users");
   const data = await res.json();
   setUsers(data);
+};
+
+//ユーザ追加用
+const handleAddUser = async (e) => {
+  e.preventDefault();
+  if (!newUserName) return;
+
+  const res = await fetch("/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: newUserName }),
+  });
+
+  const addedUser = await res.json();
+
+  setNewUserName("");
+  setIsUserModalOpen(false);
+
+  await readUsers();
+
+  // 追加したユーザーを自動選択
+  // setSelectedUserId(addedUser.id);
 };
 
   //投稿編集
@@ -108,6 +134,8 @@ const handleCancel = () => {
     <div style={{ padding: "20px" }}>
       <h1>ナレッジぽーたる</h1>
 
+      <button type="button" onClick={() => setIsUserModalOpen(true)}>ユーザー追加</button>
+
       <form onSubmit={handleCreate}>
         <input
           placeholder="タイトル"
@@ -121,12 +149,22 @@ const handleCancel = () => {
           onChange={(e) => setContent(e.target.value)}
         />
         <br />
+        {/* ユーザ選択のセレクトボックス */}
+        <select
+          value={selectedUserId}//選択したユーザ
+          onChange={(e) => setSelectedUserId(e.target.value)}
+        >
+          <option value="">ユーザー選択</option>
+          {users.map((user) => (
+            <option key={user.id} value={user.id}>
+              {user.name}
+            </option>
+          ))}
+        </select>
 
-          <button type="submit">投稿</button>
+        <button type="submit">投稿</button>
 
-        <button type="button" onClick={handleCancel}>
-          キャンセル
-        </button>
+        <button type="button" onClick={handleCancel}>キャンセル</button>
       </form>
       
 
@@ -141,6 +179,14 @@ const handleCancel = () => {
           <button onClick={() => deletePost(post.id)}>削除</button>
         </div>
       ))}
+
+      <UserAddModal
+        open={isUserModalOpen}
+        handleClose={() => setIsUserModalOpen(false)}
+        handleAddUser={handleAddUser}
+        newUserName={newUserName}
+        setNewUserName={setNewUserName}
+      />
 
       <EditModal
         open={isModalOpen}
