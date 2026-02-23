@@ -21,6 +21,8 @@ function App() {
   //ユーザ追加用
   const [newUserName, setNewUserName] = useState("");
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  //タグ検索用
+  const [searchTagIds, setSearchTagIds] = useState([]);
 
   // 投稿一覧取得
   const ReadPosts = async () => {
@@ -28,6 +30,7 @@ function App() {
     const data = await res.json();
     console.log(data);
     setPosts(data);
+
   };
 
   // 初回読み込み
@@ -147,12 +150,20 @@ const handleCancel = () => {
   const deletePost = async (id) => {
   await fetch(`/posts/${id}`, {
     method: "DELETE"
-  });
+      });
+    ReadPosts();
+  };
 
 
+  //タグ検索　タグ選択
+  const toggleFilterTag = (id) => {
+    if (searchTagIds.includes(id)) {
+      setSearchTagIds(searchTagIds.filter(tagId => tagId !== id));
+    } else {
+      setSearchTagIds([...searchTagIds, id]);
+    }
+  };
 
- ReadPosts();
-};
 
   return (
     <div style={{ padding: "20px" }}>
@@ -214,14 +225,57 @@ const handleCancel = () => {
       <hr />
 
       <h2>投稿一覧</h2>
-      {posts.map((post) => (
+
+      <h3>タグで絞り込み</h3>
+      <div>
+        <button onClick={() => setSearchTagIds([])}>
+          すべて表示
+        </button>
+
+        {tags.map(tag => (
+          <button
+            key={tag.id}
+            style={{
+              margin: "5px",
+              backgroundColor:
+                searchTagIds.includes(tag.id)
+                  ? "orange"
+                  : "white"
+            }}
+            onClick={() => toggleFilterTag(tag.id)}
+          >
+            {tag.name}
+          </button>
+        ))}
+      </div>
+      {/* 投稿一覧 */}
+      {posts
+        .filter(post => {
+          // タグ検索で１つも選択されていなければ全件表示
+          if (searchTagIds.length === 0) return true;
+
+          //idでなくタグ名で取得してるから名前で比較
+      
+          // return (post.tags ?? []).some(tagName => {
+          //   return searchTagIds.some(filterId => {
+          //     const found = tags.find(t => t.id === filterId);
+          //     return found && found.name === tagName;
+          //   });
+          // });
+
+          // .some ➡ 条件を満たすものが１つでもあればtrue
+          return (post.tags ?? []).some(tag =>
+            searchTagIds.includes(tag.id)
+          );
+        })
+        .map(post => (
         <div key={post.id}>
               <h3>id:{post.id} title:{post.title}</h3>
               <p>{post.content}</p>
               <div>
                 {(post.tags ?? []).map((tag, index) => (
                   <span key={index} style={{ marginRight: "5px", color: "blue" }}>
-                    #{tag}
+                    #{tag.name}
                   </span>
                 ))}
               </div>

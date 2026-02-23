@@ -36,7 +36,17 @@ router.get("/", async (req, res) => {
       .select(
         "posts.*",
         knex.raw(
-          `COALESCE(array_agg(tags.name) FILTER (WHERE tags.name IS NOT NULL),'{}') as tags`,
+          `
+            COALESCE(
+              json_agg(
+                json_build_object(
+                  'id', tags.id,
+                  'name', tags.name
+                )
+              ) FILTER (WHERE tags.id IS NOT NULL),
+              '[]'
+            ) as tags
+          `,
         ),
       )
       .groupBy("posts.id")
