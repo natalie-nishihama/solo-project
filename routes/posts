@@ -31,13 +31,14 @@ const knex = require("../db/knex");
 router.get("/", async (req, res) => {
   try {
     const posts = await knex("posts")
+      .leftJoin("users", "posts.user_id", "users.id")
       .leftJoin("post_tags", "posts.id", "post_tags.post_id")
       .leftJoin("tags", "post_tags.tag_id", "tags.id")
       .select(
         "posts.*",
+        "users.name as user_name",
         knex.raw(
-          `
-            COALESCE(
+          `COALESCE(
               json_agg(
                 json_build_object(
                   'id', tags.id,
@@ -49,7 +50,7 @@ router.get("/", async (req, res) => {
           `,
         ),
       )
-      .groupBy("posts.id")
+      .groupBy("posts.id", "users.name")
       .orderBy("posts.created_at", "desc");
     // knex.raw➡生SQLを書いている
     // array_agg➡同じグループの値を配列にまとめる集約関数
