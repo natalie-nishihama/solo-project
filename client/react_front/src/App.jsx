@@ -181,7 +181,7 @@ const handleCancel = () => {
 
  return (
     <div style={{ padding: "20px" }}>
-      <h1>ナレッジぽーたる</h1>
+      <h1>なれぽ</h1>
 
       <button type="button" onClick={() => setIsUserModalOpen(true)}>
         ユーザー追加

@@ -3,14 +3,13 @@
  * @returns { Promise<void> }
  */
 exports.seed = async function (knex) {
-  // 既存データを削除
-  await knex("tags").del();
+  const tags = ["REACT", "JavaScript", "TypeScript", "README"];
 
-  // 初期データを挿入
-  await knex("tags").insert([
-    { name: "REACT" },
-    { name: "JavaScript" },
-    { name: "TypeScript" },
-    { name: "README" },
-  ]);
+  for (const name of tags) {
+    // 存在しなければ挿入
+    const exists = await knex("tags").where({ name }).first();
+    if (!exists) {
+      await knex("tags").insert({ name });
+    }
+  }
 };
