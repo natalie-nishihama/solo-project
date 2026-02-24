@@ -162,17 +162,13 @@ const handleCancel = () => {
 
   //タグ検索　タグ選択
   const toggleFilterTag = (id) => {
-  if (id) {
-    // すべて表示
-    setSearchTagIds([]);
-  } else if (searchTagIds.includes(id)) {
-    // 既に選択されているタグを解除
-    setSearchTagIds(searchTagIds.filter(tagId => tagId !== id));
-  } else {
-    // 選択したタグを追加
-    setSearchTagIds([...searchTagIds, id]);
-  }
-};
+    if (searchTagIds.includes(id)) {
+      setSearchTagIds(searchTagIds.filter(tagId => tagId !== id));
+    } else {
+      setSearchTagIds([...searchTagIds, id]);
+    }
+  };
+
   //いいね機能
   const handleLike = async (id) => {
     await fetch(`/posts/${id}/like`, {
