@@ -1,0 +1,72 @@
+/* フォーム全体 */
+.post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 要素間のスペース */
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  max-width: 600px;
+  margin-bottom: 20px;
+  
+  
+}
+
+/* タイトル入力 */
+.post-input {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* 内容入力（textarea） */
+.post-textarea {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  resize: vertical; /* 高さだけ変更可能 */
+  min-height: 80px;
+}
+
+/* タグボタン */
+.post-tags {
+  gap: 5px;
+
+}
+
+.post-tags .tag {
+  padding: 5px 10px;
+  border: 2px;
+  border-radius: 5px;
+  background-color: #eee;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.post-tags .tag.active {
+  background-color: #ffb6c1;
+  color: #fff;
+}
+
+/* 投稿ボタン */
+.submit-btn {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ecb0cb;
+  color: #3b3b3b;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: rgb(221, 97, 174);
+}
+
+.label {
+  font-weight: bold;
+}
+

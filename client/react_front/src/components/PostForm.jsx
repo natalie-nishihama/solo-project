@@ -1,3 +1,5 @@
+import "./PostForm.css"
+
 // 新規投稿フォーム
 export default function PostForm({
   title, setTitle,
@@ -7,17 +9,20 @@ export default function PostForm({
   handleCreate,
 }) {
   return (
-    <form onSubmit={handleCreate}>
+    <form onSubmit={handleCreate} className="post-form">
+      <p className="label">新規投稿</p>
       <input
         placeholder="タイトル"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
+        className="post-input"
       />
       <br />
       <textarea
         placeholder="内容"
         value={content}
         onChange={(e) => setContent(e.target.value)}
+        className="post-textarea"
       />
       <br />
 
@@ -28,12 +33,14 @@ export default function PostForm({
             key={tag.id}
             type="button"
             style={{
+              border: "1px solid #000000",
               margin: "5px",
               backgroundColor: selectedTags.includes(tag.id)
-                ? "lightblue"
+                ? "pink"
                 : "white",
             }}
             onClick={() => selectTag(tag.id)}
+            className="post-tags"
           >
             {tag.name}
           </button>
@@ -54,7 +61,7 @@ export default function PostForm({
         ))}
       </select>
 
-      <button type="submit">投稿</button>
+      <button type="submit" className="submit-btn">投稿</button>
     </form>
   );
 }

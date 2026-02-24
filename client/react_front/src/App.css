@@ -44,3 +44,51 @@
 .post-content {
   white-space: pre-wrap;
 }
+
+/* ヘッダーを右上にボタン */
+header {
+  display: flex;                 /* 横並びにする */
+  justify-content: space-between; /* 左右に分ける（h1は左、ボタンは右） */
+  align-items: center;           /* 垂直方向も中央揃え */
+  padding: 0px 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%;
+}
+
+
+/* ヘッダー全体 */
+.app-header {
+  display: flex;                 /* 横並び */
+  justify-content: space-between; /* 左右に分ける */
+  align-items: center;           /* 垂直中央揃え */
+  padding: 10px 20px;            /* 内側の余白 */
+
+  background-color: #fff;        /* 背景色 */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* 下に影 */
+  border-radius: 0 0 10px 10px; /* 下だけ角丸 */
+  margin-bottom: 20px;
+}
+
+/* ヘッダーのタイトル */
+.app-header h1 {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin: 0; /* デフォルトマージンをリセット */
+}
+
+
+
+.add-user-btn {
+  padding: 6px 12px;
+  border-radius: 5px;
+  border: none;
+  background-color: #ecb0cb;
+  color: #1d1d1d;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.add-user-btn:hover {
+  background-color: rgb(221, 97, 174);
+}

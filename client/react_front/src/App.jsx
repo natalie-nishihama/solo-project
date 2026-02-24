@@ -187,12 +187,17 @@ const handleCancel = () => {
 
 
  return (
-    <div style={{ padding: "20px" }}>
+  <>
+  <header className="app-header">
       <h1>なれぽ</h1>
 
       <button type="button" onClick={() => setIsUserModalOpen(true)} className="add-user-btn">
         ユーザー追加
       </button>
+
+      </header>
+    <div style={{ padding: "20px" }}>
+      
 
       <PostForm
         title={title}
@@ -243,6 +248,7 @@ const handleCancel = () => {
         setContent={setContent}
       />
     </div>
+    </>
   );
 }
 
