@@ -162,7 +162,7 @@ const handleCancel = () => {
 
   //タグ検索　タグ選択
   const toggleFilterTag = (id) => {
-  if (id === null) {
+  if (id) {
     // すべて表示
     setSearchTagIds([]);
   } else if (searchTagIds.includes(id)) {
