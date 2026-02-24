@@ -12,10 +12,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// React のビルドフォルダを静的配信
-app.use("/", express.static(__dirname + "client/react_front/dist"));
-app.use(express.static(path.join(__dirname, "client/react_front/dist")));
-
 //投稿
 app.use("/posts", postsRoutes);
 
@@ -28,6 +24,10 @@ app.use("/users", usersRoutes);
 // app.get("/", (req, res) => {
 //   res.send("Server is running");
 // });
+
+// React のビルドフォルダを静的配信
+app.use("/", express.static(__dirname + "client/react_front/dist"));
+app.use(express.static(path.join(__dirname, "client/react_front/dist")));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
