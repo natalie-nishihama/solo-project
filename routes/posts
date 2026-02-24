@@ -6,14 +6,7 @@ const knex = require("../db/knex");
 
 router.get("/", async (req, res) => {
   try {
-    // クエリからタグを取得
-    let { tags } = req.query; // ?tags=1,2 の場合
-    if (tags) {
-      if (!Array.isArray(tags)) tags = tags.split(","); // "1,2" → ["1","2"]
-      tags = tags.map(Number); // ["1","2"] → [1,2]
-    }
-
-    let query = knex("posts")
+    const posts = await knex("posts")
       .leftJoin("users", "posts.user_id", "users.id")
       .leftJoin("post_tags", "posts.id", "post_tags.post_id")
       .leftJoin("tags", "post_tags.tag_id", "tags.id")
@@ -35,13 +28,6 @@ router.get("/", async (req, res) => {
       )
       .groupBy("posts.id", "users.name")
       .orderBy("posts.created_at", "desc");
-
-    // タグで絞り込む場合だけ whereIn を追加
-    if (tags && tags.length > 0) {
-      query = query.whereIn("post_tags.tag_id", tags);
-    }
-
-    const posts = await query;
     // knex.raw➡生SQLを書いている
     // array_agg➡同じグループの値を配列にまとめる集約関数
     // 投稿ごとにタグをまとめている
