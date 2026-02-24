@@ -55,7 +55,8 @@ app.use("/users", usersRoutes);
 app.use("/tags", tagsRoutes);
 
 // React のビルドフォルダを静的配信
-const buildPath = path.join(__dirname, "client", "react_front", "dist");
+const buildPath = path.join(__dirname, "../client/react_front/dist");
+// const buildPath = path.join(__dirname, "client", "react_front", "dist");
 app.use(express.static(buildPath));
 
 // 静的ファイルに存在しない場合は React の index.html にフォールバック
