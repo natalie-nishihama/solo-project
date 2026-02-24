@@ -1,4 +1,6 @@
 // 投稿表示（単体）
+import "./PostItem.css";
+
 export default function PostItem({
   post,
   handleLike,
@@ -6,13 +8,13 @@ export default function PostItem({
   deletePost,
 }) {
   return (
-    <div>
+    <div className="post-item">
       <p>投稿者: {post.user_name}</p>
-      <h3>id:{post.id} title:{post.title}</h3>
-      <p>{post.content}</p>
+      <h3>{post.title}</h3>
+      <div className="post-content">{post.content}</div>
       <div>
         {(post.tags ?? []).map((tag, index) => (
-          <span key={index} style={{ marginRight: "5px", color: "blue" }}>
+          <span key={index} style={{ marginRight: "5px", color: "purple" }}>
             #{tag.name}
           </span>
         ))}

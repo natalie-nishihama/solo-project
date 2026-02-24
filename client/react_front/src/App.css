@@ -40,3 +40,7 @@
 .read-the-docs {
   color: #888;
 }
+
+.post-content {
+  white-space: pre-wrap;
+}
