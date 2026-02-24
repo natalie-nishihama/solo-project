@@ -26,8 +26,8 @@ app.use("/users", usersRoutes);
 // });
 
 // React のビルドフォルダを静的配信
-app.use("/", express.static(__dirname + "client/react_front/dist"));
-app.use(express.static(path.join(__dirname, "client/react_front/dist")));
+app.use("/", express.static(__dirname + "/client/react_front/dist"));
+app.use(express.static(path.join(__dirname, "/client/react_front/dist")));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
