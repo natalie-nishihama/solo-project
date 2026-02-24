@@ -18,7 +18,7 @@ export default function SearchFilters({
 
       <h3>タグで絞り込み</h3>
       <div>
-        <button onClick={() => toggleFilterTag([])}>すべて表示</button>
+        <button onClick={() => toggleFilterTag(null)}>すべて表示</button>
         {tags.map((tag) => (
           <button
             key={tag.id}

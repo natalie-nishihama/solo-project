@@ -15,11 +15,11 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #7a57e4;
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #533384;
 }
 
 body {
@@ -28,6 +28,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: rgb(216, 200, 207);
 }
 
 h1 {
@@ -53,6 +54,25 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+/* ヘッダーを右上にボタン */
+.header {
+  display: flex;
+  justify-content: space-between; /* 左にタイトル、右にボタン */
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.add-user-btn {
+  padding: 6px 12px;
+  border-radius: 5px;
+  border: none;
+  background-color: #2196f3;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
 
 @media (prefers-color-scheme: light) {
   :root {

@@ -6,6 +6,8 @@ import PostList from "./components/PostList";
 import EditModal from "./components/EditModal";
 import UserAddModal from "./components/UserAddModal";
 
+import "./App.css"
+
 function App() {
   //投稿一覧取得用
   const [posts, setPosts] = useState([]);
@@ -161,8 +163,13 @@ const handleCancel = () => {
 
 
   //タグ検索　タグ選択
+  //idは数値が入るのが基本だから、[]を入れるのはよくない。
+  //0のidがないから通る。厳密に考えるならid === null
+  // 設計時にバグが起きないように考慮することが大事
   const toggleFilterTag = (id) => {
-    if (searchTagIds.includes(id)) {
+    if(!id){
+      setSearchTagIds([]);
+    } else if (searchTagIds.includes(id)) {
       setSearchTagIds(searchTagIds.filter(tagId => tagId !== id));
     } else {
       setSearchTagIds([...searchTagIds, id]);
@@ -183,7 +190,7 @@ const handleCancel = () => {
     <div style={{ padding: "20px" }}>
       <h1>なれぽ</h1>
 
-      <button type="button" onClick={() => setIsUserModalOpen(true)}>
+      <button type="button" onClick={() => setIsUserModalOpen(true)} className="add-user-btn">
         ユーザー追加
       </button>
 
