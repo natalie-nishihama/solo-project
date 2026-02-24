@@ -30,6 +30,7 @@ module.exports = {
   //   },
 
   production: {
+    client: "pg",
     // コネクション書き方：https://knexjs.org/guide/migrations.html#basic-configuration
     connection: process.env.DATABASE_URL,
     migrations: {
